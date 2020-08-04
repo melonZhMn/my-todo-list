@@ -1,0 +1,23 @@
+/*
+ * @Author: melon 
+ * @Date: 2020-08-05 01:30:37 
+ * @Last Modified by: melon
+ * @Last Modified time: 2020-08-05 02:24:49
+ */
+
+.todo-wrapper {
+  height: 100vh;
+  padding: 24px;
+
+}
+
+/* todo 头部 */
+.todo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.todo-header .todo-title {
+  text-align: left;
+}

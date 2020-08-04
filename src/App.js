@@ -1,26 +1,21 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+/*
+ * @Author: melon
+ * @Date: 2020-08-05 00:47:47
+ * @Last Modified by: melon
+ * @Last Modified time: 2020-08-05 00:57:43
+ */
+import React from 'react'
+import './App.css'
+
+// 引入 TodoList
+import TodoList from './Containers/TodoList'
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <TodoList />
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
