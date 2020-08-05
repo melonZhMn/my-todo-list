@@ -2,7 +2,7 @@
  * @Author: melon 
  * @Date: 2020-08-05 05:09:23 
  * @Last Modified by: melon
- * @Last Modified time: 2020-08-05 22:47:25
+ * @Last Modified time: 2020-08-06 01:05:30
  */
 
 .todo-list-wrapper {
@@ -14,8 +14,6 @@
   position: relative;
 
 }
-
-
 
 .todo-list .cover-mask {
   position: fixed;

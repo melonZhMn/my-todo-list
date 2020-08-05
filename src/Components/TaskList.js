@@ -2,7 +2,7 @@
  * @Author: melon
  * @Date: 2020-08-05 04:54:11
  * @Last Modified by: melon
- * @Last Modified time: 2020-08-05 23:45:15
+ * @Last Modified time: 2020-08-06 02:14:54
  */
 
 import React, { useState, useEffect } from 'react'
@@ -13,10 +13,9 @@ import {
   ListItemText,
   ListItemSecondaryAction,
 } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
 import './taskList.css'
 
-const TaskList = ({ list, getActions }) => {
+const TaskList = ({ list, getActions, updateSequence, getList, activeTab }) => {
   // 拖拽数据
   const [dragStartIndex, setDragStartIndex] = useState(null)
   const [dragStartData, setDragStartData] = useState(null)
@@ -34,11 +33,27 @@ const TaskList = ({ list, getActions }) => {
    * @param {*} startIndex 开始排序下标
    * @param {*} endIndex 结束排序下标
    */
-  const getListAfterDrag = (arr, startIndex, endIndex) => {
-    const result = Array.from(arr)
+  const getListAfterDrag = (startIndex, endIndex) => {
+    const result = dataList.slice()
+    console.log('====== startIndex console=====>')
+    console.log(startIndex, endIndex)
     const [removed] = result.splice(startIndex, 1)
     result.splice(endIndex, 0, removed)
-
+    // if (startIndex < endIndex) {
+    //   result.splice(endIndex + 1, 0, startData)
+    //   result.splice(startIndex, 1)
+    //   // header = result.slice(0, startIndex)
+    //   // center = result.slice(startIndex + 1, endIndex + 1)
+    //   // footer = result.slice(endIndex + 1)
+    //   // newList = [...header, ...center, startData, ...footer]
+    // } else {
+    //   result.splice(endIndex, 0, startData)
+    //   result.splice(startIndex + 1, 1)
+    //   // header = result.slice(0, endIndex)
+    //   // center = result.slice(endIndex, startIndex)
+    //   // footer = result.slice(startIndex + 1)
+    //   // newList = [...header, startData, ...center, ...footer]
+    // }
     return result
   }
   // 拖动事件
@@ -63,15 +78,42 @@ const TaskList = ({ list, getActions }) => {
     ee.target.style.backgroundColor = ''
   }
   // 当一个元素或是选中的文字被拖拽释放到一个有效的释放目标位置时
-  const drop = (data, index, ee) => {
+  const drop = async (data, index, ee) => {
     ee.preventDefault()
     ee.target.style.border = ''
     ee.target.style.boxShadow = ''
     ee.target.style.backgroundColor = ''
-    const newList = getListAfterDrag(list, dragStartIndex, index)
+    let prevId
+    let nextId
+    if (dragStartIndex < index) {
+      prevId = data.id
+      if (index !== dataList.length - 1) {
+        nextId = dataList[index + 1].id
+      }
+    } else {
+      if (index !== 0) {
+        prevId = dataList[index - 1].id
+      }
+      nextId = data.id
+    }
+    const newList = getListAfterDrag(dragStartIndex, index)
+
     // 派发请求
+    // try {
+    //   const res = await updateSequence({
+    //     variables: { id: data.id, prevId, nextId },
+    //   })
+    //   if (!!res.data) {
+    //     getList()
+    //     setDragStartIndex(null)
+    //     setDragStartData({})
+    //   }
+    // } catch (error) {
+    // } finally {
+    // }
     setDataList(newList)
     setDragStartIndex(null)
+    setDragStartData({})
   }
   const allowDrop = (ee) => {
     ee.preventDefault()
@@ -93,12 +135,14 @@ const TaskList = ({ list, getActions }) => {
       return {}
     }
   }
+  console.log('======dataList console=====>')
+  console.log(dataList)
   return (
     <Container fixed className={'todo-list-wrapper '}>
       <List className="todo-list">
         {dataList.map((item, index) => (
           <ListItem
-            key={item.id}
+            key={index}
             {...{
               draggable: 'true',
               onDragEnter: (e) => dragenter(e),

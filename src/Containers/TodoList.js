@@ -2,7 +2,7 @@
  * @Author: melon
  * @Date: 2020-08-05 00:50:45
  * @Last Modified by: melon
- * @Last Modified time: 2020-08-05 22:18:18
+ * @Last Modified time: 2020-08-06 02:08:55
  */
 import React, { useState, useEffect } from 'react'
 
@@ -81,7 +81,10 @@ const TodoList = () => {
   const [updateTask, { data: updateData }] = useMutation(UPDATE_TASK)
   // 删除
   const [deleteTask, { data: deleteData }] = useMutation(DELETE_TASK)
-
+  // 排序
+  const [updateSequence, { data: updateSequenceData }] = useMutation(
+    UPDATE_SEQUENCE
+  )
   const tasks = taskListData ? taskListData.tasks : []
   if (taskInfo && taskInfo.task && taskInfo.id) {
     setTaskDialogData({
@@ -159,6 +162,9 @@ const TodoList = () => {
       />
       <TaskList
         list={tasks}
+        updateSequence={updateSequence}
+        getList={refetch}
+        activeTab={activeTab}
         getActions={(data) => (
           <Box>
             <Tooltip title="编辑">
