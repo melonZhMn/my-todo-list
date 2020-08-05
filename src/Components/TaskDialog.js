@@ -1,8 +1,8 @@
 /*
  * @Author: melon
  * @Date: 2020-08-05 04:54:19
- * @Last Modified by:   melon
- * @Last Modified time: 2020-08-05 04:54:19
+ * @Last Modified by: melon
+ * @Last Modified time: 2020-08-05 20:00:08
  */
 import React, { useState } from 'react'
 
@@ -32,9 +32,14 @@ const useStyles = makeStyles((theme) => ({
 
 const TaskDialog = ({
   handleClose,
-  onCreate,
   taskDialogData: { open, type, data },
+  createTask,
+  updateTask,
+  getList,
+  activeTab,
 }) => {
+  const [loading, setLoading] = useState('false')
+  let input
   const isView = [VIEW].includes(type)
   let typeText = '查看'
   switch (type) {
@@ -56,8 +61,11 @@ const TaskDialog = ({
     >
       <DialogTitle id="form-dialog-title">{typeText}任务</DialogTitle>
       <DialogContent>
-        <form className={classes.root} noValidate autoComplete="off">
+        <form className={classes.root} autoComplete="off">
           <TextField
+            inputRef={(node) => {
+              input = node
+            }}
             name="name"
             required
             id="outlined-helperText"
@@ -74,7 +82,34 @@ const TaskDialog = ({
       <DialogActions>
         <Button onClick={handleClose}>取消</Button>
         {!isView ? (
-          <Button onClick={onCreate} color="secondary">
+          <Button
+            onClick={async () => {
+              setLoading('true')
+              try {
+                const res = [CREATE].includes(type)
+                  ? await createTask({
+                      variables: { name: input.value, completed: 0 },
+                    })
+                  : await updateTask({
+                      variables: { ...data, name: input.value },
+                    })
+                console.log('====== console=====>')
+                console.log(!!res.data)
+                if (!!res.data) {
+                  console.log('====== console=====>')
+                  console.log(!!res.data, '我被调用了')
+                  await getList({ variables: { completed: activeTab } })
+                  handleClose()
+                }
+              } catch (error) {
+              } finally {
+                setLoading('false')
+              }
+            }}
+            color="secondary"
+            type="submit"
+            loading={loading}
+          >
             {typeText}
           </Button>
         ) : (

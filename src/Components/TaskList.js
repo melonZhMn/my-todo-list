@@ -2,7 +2,7 @@
  * @Author: melon
  * @Date: 2020-08-05 04:54:11
  * @Last Modified by: melon
- * @Last Modified time: 2020-08-05 07:23:16
+ * @Last Modified time: 2020-08-05 17:34:43
  */
 
 import React, { useState, useEffect } from 'react'
@@ -35,7 +35,13 @@ const TaskList = ({ list, getActions }) => {
   const [dragStartData, setDragStartData] = useState(null)
   const [dataList, setDataList] = useState([])
   useEffect(() => {
-    setDataList(list)
+    console.log('====== list console=====>')
+    console.log(list)
+    if (![null, undefined].includes(list)) {
+      setDataList(list)
+    } else {
+      setDataList([])
+    }
   }, [list])
   /**
    *
