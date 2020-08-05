@@ -2,14 +2,14 @@
  * @Author: melon
  * @Date: 2020-08-05 04:54:19
  * @Last Modified by: melon
- * @Last Modified time: 2020-08-05 20:40:44
+ * @Last Modified time: 2020-08-05 22:13:08
  */
 import React, { useState } from 'react'
 
 import { makeStyles } from '@material-ui/core/styles'
 
 // 引入常量
-import { ModalType } from '../Constants/index'
+import { ModalType } from '../constants/index'
 
 import {
   Dialog,

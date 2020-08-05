@@ -2,7 +2,7 @@
  * @Author: melon
  * @Date: 2020-08-05 04:54:11
  * @Last Modified by: melon
- * @Last Modified time: 2020-08-05 17:34:43
+ * @Last Modified time: 2020-08-05 23:45:15
  */
 
 import React, { useState, useEffect } from 'react'
@@ -14,29 +14,14 @@ import {
   ListItemSecondaryAction,
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
-import './TaskList.css'
-const useListStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-    maxWidth: 752,
-  },
-  demo: {
-    backgroundColor: theme.palette.background.paper,
-  },
-  title: {
-    margin: theme.spacing(4, 0, 2),
-  },
-}))
+import './taskList.css'
 
 const TaskList = ({ list, getActions }) => {
-  const listClasses = useListStyles()
   // 拖拽数据
   const [dragStartIndex, setDragStartIndex] = useState(null)
   const [dragStartData, setDragStartData] = useState(null)
   const [dataList, setDataList] = useState([])
   useEffect(() => {
-    console.log('====== list console=====>')
-    console.log(list)
     if (![null, undefined].includes(list)) {
       setDataList(list)
     } else {
@@ -60,11 +45,13 @@ const TaskList = ({ list, getActions }) => {
   const domDragstart = (data, index, ee) => {
     setDragStartIndex(index)
     setDragStartData(data)
+    ee.target.style.boxShadow = '0 0 8px rgba(30, 144, 255, 0.8)'
+    ee.target.style.backgroundColor = '#eee'
   }
   // 拖动后鼠标进入另一个可接受区域
   const dragenter = (ee) => {
     if (ee.target.draggable) {
-      ee.target.style.border = '1px dashed #e91e63'
+      // ee.target.style.border = '1px dashed #e91e63'
       ee.target.style.boxShadow = '0 0 8px rgba(30, 144, 255, 0.8)'
       ee.target.style.backgroundColor = '#eee'
     }
@@ -82,7 +69,9 @@ const TaskList = ({ list, getActions }) => {
     ee.target.style.boxShadow = ''
     ee.target.style.backgroundColor = ''
     const newList = getListAfterDrag(list, dragStartIndex, index)
+    // 派发请求
     setDataList(newList)
+    setDragStartIndex(null)
   }
   const allowDrop = (ee) => {
     ee.preventDefault()
@@ -98,14 +87,14 @@ const TaskList = ({ list, getActions }) => {
         backgroundColor: '#eee',
         // transform: `translate(10px, ${offsetY}px)`,
         opacity: 0.8,
-        border: '1px dashed #e91e63',
+        // border: '1px dashed #e91e63',
       }
     } else {
       return {}
     }
   }
   return (
-    <Container className={'todo-list-wrapper ' + listClasses.demo}>
+    <Container fixed className={'todo-list-wrapper '}>
       <List className="todo-list">
         {dataList.map((item, index) => (
           <ListItem
@@ -118,13 +107,10 @@ const TaskList = ({ list, getActions }) => {
               onDrop: (e) => drop(item, index, e),
               onDragOver: (e) => allowDrop(e),
             }}
-            // style={getDraggingStyle(index)}
+            style={getDraggingStyle(index)}
           >
             <ListItemText
-              {...{
-                draggable: 'false',
-              }}
-              primary={item.name + item.id}
+              primary={item.name}
               // secondary={secondary ? 'Secondary text' : null}
             />
             <ListItemSecondaryAction>

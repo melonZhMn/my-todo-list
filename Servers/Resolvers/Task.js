@@ -2,9 +2,9 @@
  * @Author: melon
  * @Date: 2020-08-05 17:53:35
  * @Last Modified by: melon
- * @Last Modified time: 2020-08-05 19:57:06
+ * @Last Modified time: 2020-08-05 22:13:36
  */
-const tasks = require('../Db/tasks.js')
+const tasks = require('../db/tasks.js')
 
 const TaskQuery = {
   tasks: (parent, { completed }, context, inf) => {

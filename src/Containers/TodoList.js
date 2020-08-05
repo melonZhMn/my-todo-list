@@ -2,7 +2,7 @@
  * @Author: melon
  * @Date: 2020-08-05 00:50:45
  * @Last Modified by: melon
- * @Last Modified time: 2020-08-05 20:46:35
+ * @Last Modified time: 2020-08-05 22:18:18
  */
 import React, { useState, useEffect } from 'react'
 
@@ -25,16 +25,16 @@ import RemoveRedEyeIcon from '@material-ui/icons/RemoveRedEye'
 import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck'
 import ReplyIcon from '@material-ui/icons/Reply'
 
-import TaskDialog from '../Components/TaskDialog'
-import TaskList from '../Components/TaskList'
+import TaskDialog from '../components/TaskDialog'
+import TaskList from '../components/TaskList'
 
 import { makeStyles } from '@material-ui/core/styles'
 
 // 引入常量
-import { ModalType } from '../Constants/index'
+import { ModalType } from '../constants/index'
 
 // 引入样式表
-import './TodoList.css'
+import './todoList.css'
 // 引入apollo-client
 import { useQuery, useMutation, useLazyQuery } from '@apollo/client'
 // 引入 查询和修改语句
@@ -45,7 +45,7 @@ import {
   UPDATE_SEQUENCE,
   DELETE_TASK,
   GET_TASK,
-} from '../Request/task'
+} from '../request/task'
 
 const { VIEW, CREATE, EDIT } = ModalType
 
