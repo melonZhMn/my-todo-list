@@ -2,7 +2,7 @@
  * @Author: melon
  * @Date: 2020-08-05 04:54:19
  * @Last Modified by: melon
- * @Last Modified time: 2020-08-05 20:00:08
+ * @Last Modified time: 2020-08-05 20:40:44
  */
 import React, { useState } from 'react'
 
@@ -93,12 +93,9 @@ const TaskDialog = ({
                   : await updateTask({
                       variables: { ...data, name: input.value },
                     })
-                console.log('====== console=====>')
-                console.log(!!res.data)
+
                 if (!!res.data) {
-                  console.log('====== console=====>')
-                  console.log(!!res.data, '我被调用了')
-                  await getList({ variables: { completed: activeTab } })
+                  await getList()
                   handleClose()
                 }
               } catch (error) {

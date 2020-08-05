@@ -2,7 +2,7 @@
  * @Author: melon
  * @Date: 2020-08-05 00:50:45
  * @Last Modified by: melon
- * @Last Modified time: 2020-08-05 20:17:29
+ * @Last Modified time: 2020-08-05 20:46:35
  */
 import React, { useState, useEffect } from 'react'
 
@@ -67,7 +67,12 @@ const TodoList = () => {
     data: {},
   })
   // 获取列表
-  const [getTaskList, { data: taskListData }] = useLazyQuery(GET_TASK_LIST)
+  const {
+    loading,
+    error,
+    data: taskListData,
+    refetch,
+  } = useQuery(GET_TASK_LIST, { variables: { completed: activeTab } })
   // 获取单个
   const [getTaskInfo, { data: taskInfo }] = useLazyQuery(GET_TASK)
   // 新增
@@ -108,35 +113,9 @@ const TodoList = () => {
     })
   }
 
-  // 删除数据
-  const onDelete = async (id) => {
-    // 派发删除请求
-    getTaskList({ variables: { completed: activeTab } })
-    // try {
-    //   const res = await deleteTask({
-    //     variables: { id },
-    //   })
-    //   if (!!res.data) {
-    //     console.log('删除成功')
-    //     getTaskList({ variables: { completed: activeTab } })
-    //   }
-    // } catch (error) {
-    // } finally {
-    // }
-    // 重新获取数据
-  }
-  // 获取单个数据
-  const getInfoById = () => {
-    // 派发请求
-  }
-  // 修改完成状态
-  const updateCompleteStatus = () => {
-    // 派发请求
-    // 重新获取数据
-  }
   useEffect(() => {
-    getTaskList({ variables: { completed: activeTab } })
-  }, [activeTab, getTaskList])
+    refetch()
+  }, [activeTab, refetch])
   return (
     <div className="todo-wrapper">
       <CssBaseline />
@@ -175,7 +154,7 @@ const TodoList = () => {
         handleClose={hideTaskDialog}
         createTask={createTask}
         updateTask={updateTask}
-        getList={getTaskList}
+        getList={refetch}
         activeTab={activeTab}
       />
       <TaskList
@@ -202,7 +181,18 @@ const TodoList = () => {
               <Tooltip title="重新打开">
                 <IconButton
                   key={'reopen' + data.id}
-                  onClick={() => updateCompleteStatus(data)}
+                  onClick={async () => {
+                    try {
+                      const res = await updateTask({
+                        variables: { ...data, completed: 0 },
+                      })
+                      if (!!res.data) {
+                        refetch()
+                      }
+                    } catch (error) {
+                    } finally {
+                    }
+                  }}
                 >
                   <ReplyIcon style={{ color: red[700] }} />
                 </IconButton>
@@ -211,7 +201,18 @@ const TodoList = () => {
               <Tooltip title="完成">
                 <IconButton
                   key={'complete' + data.id}
-                  onClick={() => updateCompleteStatus(data)}
+                  onClick={async () => {
+                    try {
+                      const res = await updateTask({
+                        variables: { ...data, completed: 1 },
+                      })
+                      if (!!res.data) {
+                        refetch()
+                      }
+                    } catch (error) {
+                    } finally {
+                    }
+                  }}
                 >
                   <PlaylistAddCheckIcon style={{ color: green[700] }} />
                 </IconButton>
@@ -226,8 +227,7 @@ const TodoList = () => {
                       variables: { id: data.id },
                     })
                     if (!!res.data) {
-                      console.log('删除成功')
-                      getTaskList({ variables: { completed: activeTab } })
+                      refetch()
                     }
                   } catch (error) {
                   } finally {
