@@ -2,7 +2,7 @@
  * @Author: melon
  * @Date: 2020-08-05 17:53:52
  * @Last Modified by: melon
- * @Last Modified time: 2020-08-06 14:20:53
+ * @Last Modified time: 2020-08-06 18:24:41
  */
 const { SQLDataSource } = require('datasource-sql')
 class Database extends SQLDataSource {
@@ -39,7 +39,7 @@ class Database extends SQLDataSource {
     const ids = await this.knex('tasks')
       .insert({
         name: name,
-        sequence: maxSequenceTask.sequence + 1024,
+        sequence: maxSequenceTask ? maxSequenceTask.sequence + 1024 : 0,
       })
       .catch(function (error) {
         console.error(error)
@@ -48,11 +48,12 @@ class Database extends SQLDataSource {
   }
   // 更新一条 task
   async updateTask(id, name, completed) {
-    if (name && completed) {
+    const hasCompleted = ![null, undefined].includes(completed)
+    if (name && hasCompleted) {
       await this.knex('tasks')
         .where('id', id)
         .update({ name: name, completed: completed })
-    } else if (completed) {
+    } else if (hasCompleted) {
       await this.knex('tasks').where('id', id).update({ completed: completed })
     } else if (name) {
       await this.knex('tasks').where('id', id).update({ name: name })

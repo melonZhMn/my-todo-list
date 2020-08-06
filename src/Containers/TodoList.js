@@ -2,7 +2,7 @@
  * @Author: melon
  * @Date: 2020-08-05 00:50:45
  * @Last Modified by: melon
- * @Last Modified time: 2020-08-06 02:08:55
+ * @Last Modified time: 2020-08-06 18:33:37
  */
 import React, { useState, useEffect } from 'react'
 
@@ -165,8 +165,8 @@ const TodoList = () => {
         updateSequence={updateSequence}
         getList={refetch}
         activeTab={activeTab}
-        getActions={(data) => (
-          <Box>
+        getActions={(data) => {
+          const btnActions = [
             <Tooltip title="编辑">
               <IconButton
                 key={'edit' + data.id}
@@ -174,7 +174,7 @@ const TodoList = () => {
               >
                 <EditIcon style={{ color: pink[400] }} />
               </IconButton>
-            </Tooltip>
+            </Tooltip>,
             <Tooltip title="查看">
               <IconButton
                 key={'view' + data.id}
@@ -182,8 +182,29 @@ const TodoList = () => {
               >
                 <RemoveRedEyeIcon style={{ color: lightBlue[500] }} />
               </IconButton>
-            </Tooltip>
-            {data.completed ? (
+            </Tooltip>,
+            <Tooltip title="删除">
+              <IconButton
+                key={'delete' + data.id}
+                onClick={async () => {
+                  try {
+                    const res = await deleteTask({
+                      variables: { id: data.id },
+                    })
+                    if (!!res.data) {
+                      refetch()
+                    }
+                  } catch (error) {
+                  } finally {
+                  }
+                }}
+              >
+                <DeleteIcon style={{ color: grey[400] }} />
+              </IconButton>
+            </Tooltip>,
+          ]
+          if (data.completed === 1) {
+            btnActions.push(
               <Tooltip title="重新打开">
                 <IconButton
                   key={'reopen' + data.id}
@@ -203,7 +224,10 @@ const TodoList = () => {
                   <ReplyIcon style={{ color: red[700] }} />
                 </IconButton>
               </Tooltip>
-            ) : (
+            )
+          }
+          if (data.completed === 0) {
+            btnActions.push(
               <Tooltip title="完成">
                 <IconButton
                   key={'complete' + data.id}
@@ -223,28 +247,10 @@ const TodoList = () => {
                   <PlaylistAddCheckIcon style={{ color: green[700] }} />
                 </IconButton>
               </Tooltip>
-            )}
-            <Tooltip title="删除">
-              <IconButton
-                key={'delete' + data.id}
-                onClick={async () => {
-                  try {
-                    const res = await deleteTask({
-                      variables: { id: data.id },
-                    })
-                    if (!!res.data) {
-                      refetch()
-                    }
-                  } catch (error) {
-                  } finally {
-                  }
-                }}
-              >
-                <DeleteIcon style={{ color: grey[400] }} />
-              </IconButton>
-            </Tooltip>
-          </Box>
-        )}
+            )
+          }
+          return btnActions
+        }}
       />
     </div>
   )
