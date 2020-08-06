@@ -2,7 +2,7 @@
  * @Author: melon
  * @Date: 2020-08-05 04:54:11
  * @Last Modified by: melon
- * @Last Modified time: 2020-08-06 02:14:54
+ * @Last Modified time: 2020-08-06 02:17:45
  */
 
 import React, { useState, useEffect } from 'react'
@@ -151,7 +151,7 @@ const TaskList = ({ list, getActions, updateSequence, getList, activeTab }) => {
               onDrop: (e) => drop(item, index, e),
               onDragOver: (e) => allowDrop(e),
             }}
-            style={getDraggingStyle(index)}
+            // style={getDraggingStyle(index)}
           >
             <ListItemText
               primary={item.name}

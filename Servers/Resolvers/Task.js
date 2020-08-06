@@ -2,51 +2,47 @@
  * @Author: melon
  * @Date: 2020-08-05 17:53:35
  * @Last Modified by: melon
- * @Last Modified time: 2020-08-05 22:13:36
+ * @Last Modified time: 2020-08-06 14:20:32
  */
 const tasks = require('../db/tasks.js')
 
 const TaskQuery = {
-  tasks: (parent, { completed }, context, inf) => {
-    if (![null, undefined].includes(completed)) {
-      return tasks
-        .filter((task) => task.completed == completed)
-        .sort((a, b) => a.sequence - b.sequence)
+  tasks: async (parent, { completed }, { dataSources: { db } }, inf) => {
+    if (completed !== undefined && completed === 1) {
+      return await db.getCompletedTasks()
     }
-    return tasks.sort((a, b) => a.sequence - b.sequence)
+    return await db.getUnCompletedTasks()
   },
-  task: (parent, { id }, context, inf) => tasks.find((task) => task.id == id),
+  task: async (parent, { id }, { dataSources: { db } }, inf) => {
+    return await db.getTask(id)
+  },
 }
 
 const TaskQueryMutation = {
-  createTask: (parent, { name }, context, info) => {
-    const id = tasks.length + 1 // 如果是数据库的话就不用管id,数据库会自己增加1
-    const sequence = tasks.slice(-1)[0].sequence + 1024
-    tasks.push({ id: id, name: name, completed: false, sequence: sequence })
-    return tasks.slice(-1)[0]
+  createTask: async (parent, { name }, { dataSources: { db } }, info) => {
+    const ids = await db.createTask(name)
+    return await db.getTask(ids[0])
   },
-  updateTask: (parent, { id, name, completed }, context, info) => {
-    let task = tasks.find((task) => task.id == id)
-    if (name != undefined) task.name = name
-    if (completed != undefined) task.completed = completed
-    return task
+  updateTask: async (
+    parent,
+    { id, name, completed },
+    { dataSources: { db } },
+    info
+  ) => {
+    await db.updateTask(id, name, completed)
+    return db.getTask(id)
   },
-  updateSequence: (parent, { id, prev_id, next_id }, context, info) => {
-    let task = tasks.find((task) => task.id == id)
-    const prev = tasks.find((task) => task.id == prev_id)
-    const next = tasks.find((task) => task.id == next_id)
-    if (prev && next) {
-      task.sequence = (prev.sequence + next.sequence) / 2
-    } else if (prev) {
-      task.sequence = prev.sequence + 1024
-    } else if (next) {
-      task.sequence = next.sequence - 1024
-    }
-    return task
+  updateSequence: async (
+    parent,
+    { id, prevId, nextId },
+    { dataSources: { db } },
+    info
+  ) => {
+    await db.sortTask(id, prevId, nextId)
+    return db.getTask(id)
   },
-  deleteTask: (parent, { id }, context, info) => {
-    const index = tasks.findIndex((item) => id == item.id)
-    return tasks.splice(index, 1)[0]
+  deleteTask: async (parent, { id }, { dataSources: { db } }, info) => {
+    await db.deleteTask(id)
   },
 }
 
